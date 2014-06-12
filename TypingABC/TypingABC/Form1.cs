@@ -12,11 +12,14 @@ namespace TypingABC
 {
     public partial class frmMain : Form
     {
+        //public bool KeyPreview { get; set; }
+        
         public frmMain()
         {
             InitializeComponent();
+               
         }
-
+        
         const int BACKSPACE_KYE = 8; // backspace key의 아스키 코드값 8
         const int ENTER_KEY = 13; // enter key 아스키 코드 값 13
         const int SPACE_KEY = 32; // space key 아스키 코드 값 32
@@ -91,6 +94,7 @@ namespace TypingABC
             m_nLen = str.Length;
 
             // 다음 문장의 색깔을 검은색으로 되돌릴 코드 추가해야함
+            rtxSentence.Select(0, m_nLen);
 
             return str;
         }
@@ -99,6 +103,20 @@ namespace TypingABC
         private void tmTimer_Tick(object sender, EventArgs e)
         {
             m_nTime += 1;
+        }
+
+        // 엔터키 누르면 다음 문장 넘어가기
+        private void txtInput_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)ENTER_KEY) // 엔터키를 입력받으면
+            {
+                txtInput.Clear(); // 텍스트 입력창 지우고
+                rtxSentence.Text = NextSentence(); // 다음 문자열 뿌려주고
+                Init(); // 초기화
+                return;
+            }
+            // 백스페이스 키로 지울경우 추가하기
+            // 스페이스 바를 누를 경우 추가하기
         }
         //************************************//
         // 현재 상황 :

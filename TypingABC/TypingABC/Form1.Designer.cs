@@ -48,7 +48,6 @@
             // rtxSentence
             // 
             this.rtxSentence.Location = new System.Drawing.Point(0, 3);
-            this.rtxSentence.Multiline = false;
             this.rtxSentence.Name = "rtxSentence";
             this.rtxSentence.ReadOnly = true;
             this.rtxSentence.Size = new System.Drawing.Size(560, 185);
@@ -61,6 +60,7 @@
             this.txtInput.Name = "txtInput";
             this.txtInput.Size = new System.Drawing.Size(560, 21);
             this.txtInput.TabIndex = 0;
+            this.txtInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtInput_KeyPress);
             // 
             // lblTitle
             // 
