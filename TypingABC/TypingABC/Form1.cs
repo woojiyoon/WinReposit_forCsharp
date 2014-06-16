@@ -24,7 +24,7 @@ namespace TypingABC
         const int ENTER_KEY = 13; // enter key 아스키 코드 값 13
         const int SPACE_KEY = 32; // space key 아스키 코드 값 32
 
-        int m_nIndex = 0; // 글자 위치(사용자의 입력 횟수를 의미함)
+        int m_nIndex = 0; // 글자 위치(사용자의 입력 횟수(문자단위)를 의미함)
         int m_nLen = 0; // 현재 보이는 문장의 길이
         String m_strFile; // 파일 경로
         System.IO.StreamReader m_file;  // 파일 내용을 얻기 위한 객체
@@ -105,9 +105,57 @@ namespace TypingABC
             m_nTime += 1;
         }
 
+        private void Backspace() {
+            int cnt;
+            cnt = txtInput.SelectionLength; // 사용자의 글자 선택 영역(글자를 블럭잡으로는 것)
+
+            if (cnt == 0)  // 0이면 백스페이스 1번 입력한거고, 사용자가 블럭잡지 않은 것임
+                m_nIndex -= 1;
+            else
+                m_nIndex -= cnt;
+
+            if (m_nIndex < 0)
+                m_nIndex = 0;
+
+            if (cnt > 0)
+            {
+                String str;
+
+                rtxSentence.Select(m_nIndex, cnt);
+                str = rtxSentence.SelectedText;
+
+                rtxSentence.SelectedText = str.Replace("*", " "); // * 표시를 원래대로 돌리기
+            }
+            else {
+                rtxSentence.Select(m_nIndex, 1);
+                if (rtxSentence.SelectedText.Equals("*"))
+                    rtxSentence.SelectedText = " ";
+            }
+            rtxSentence.SelectionColor = Color.Black;
+        }
+
+        private int AvgSpeed() {
+
+            // 속도 누적하여, 그 누적값을 타이핑 시도횟수로 나누어 평균 얻기
+            return 0;
+        }
+        private int Speed() {
+            // 속도 = 거리 / 시간
+            // 타이핑 속도 = 입력한 총 문장 길이 / 걸린 시간
+            return 0;
+        }
+
+        private int Correctness() {
+
+            return 0;
+        }
+
         // 엔터키 누르면 다음 문장 넘어가기
         private void txtInput_KeyPress(object sender, KeyPressEventArgs e)
         {
+            String str1; //
+            m_nIndex += 1; // 사용자가 입력한 글자 수 증가
+                    
             if (e.KeyChar == (char)ENTER_KEY) // 엔터키를 입력받으면
             {
                 txtInput.Clear(); // 텍스트 입력창 지우고
@@ -115,18 +163,62 @@ namespace TypingABC
                 Init(); // 초기화
                 return;
             }
+            else if (e.KeyChar == (char)BACKSPACE_KYE) // 백스페이스 입력받으면
+            { 
+                // code here
+                Backspace();
+                return;
+            }
+            
+            /*
+            else if (e.KeyChar == (char)SPACE_KEY)// 스페이스바 효과 = 엔터키 효과
+            { 
+            
+            }
+             */
             // 백스페이스 키로 지울경우 추가하기
             // 스페이스 바를 누를 경우 추가하기
+
+            if (m_nLen <= m_nIndex)
+            {
+                e.Handled = true; // Handled : 키처리 이벤트 처리 여부
+                return;
+            }
+
+            str1 = rtxSentence.Text.Substring(m_nIndex,1);// 부분 문자열 가져오기 (startIndext,Length)
+
+            if (e.KeyChar.ToString().Equals(str1) != true) // 사용자 입력 글자가 틀리면
+            {
+                if (m_nIndex < 0)
+                    m_nIndex = 0;
+
+                rtxSentence.Select(m_nIndex, 1); // 텍스트 상자의 문자열 글자 선택하기
+                rtxSentence.SelectionColor = Color.Red; // 선택된 틀린 글자는 빨간색으로
+
+                if (str1.Equals(" ")) {
+                    rtxSentence.SelectedText = "*";
+                }
+                
+                // 여기에 정확도 변수가 하락되어야 함...
+            }
+            else { // 정확한 입력이면 
+                rtxSentence.Select(m_nIndex, 1);
+                rtxSentence.SelectionColor = Color.Black; // 검정글씨로..
+            }
+            m_nIndex += 1;
         }
+
+
         //************************************//
         // 현재 상황 :
         // 윈도우 폼 작성 완료
         // 텍스트 파일 불러오기
         // 사용자가 글자 타이핑 하기
+        // 엔터키 처리(완료)=> 다음문장으로 넘어감
         //**********************************//
         // 추가할 메소드들 :
         // 틀린 타이핑 처리
-        // 엔터키 처리
+        
         // 글자 지우기 처리
         // 사용자의 타이핑 속도, 정확도 표시
         // 시간이 된다면 산성비 게임 까지 !

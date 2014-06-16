@@ -60,6 +60,7 @@
             this.txtInput.Name = "txtInput";
             this.txtInput.Size = new System.Drawing.Size(560, 21);
             this.txtInput.TabIndex = 0;
+            this.txtInput.CursorChanged += new System.EventHandler(this.frmMain_Load);
             this.txtInput.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtInput_KeyPress);
             // 
             // lblTitle
